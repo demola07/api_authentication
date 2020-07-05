@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const User = require('../models/User')
 
 exports.signUp = async (req, res, next) => {
@@ -16,13 +18,16 @@ exports.signUp = async (req, res, next) => {
   // Create new user
   const newUser = new User({ email, password })
 
-  const createdUser = await newUser.save()
+  await newUser.save()
 
-  // Respond with token
+  // Generate token
+  const token = signToken(newUser)
+
+  //Respond with token
   res.status(201).json({
     success: true,
     message: 'User created',
-    data: createdUser
+    token
   })
 }
 exports.signIn = async (req, res, next) => {
@@ -32,4 +37,16 @@ exports.signIn = async (req, res, next) => {
 exports.secret = async (req, res, next) => {
   console.log('Secret route reached')
   res.send('secret working')
+}
+
+const signToken = (user) => {
+  return jwt.sign(
+    {
+      iss: 'apiauth',
+      sub: user._id,
+      iat: new Date().getTime(),
+      exp: new Date().setDate(new Date().getDate() + 1) // current time + 1 day ahead
+    },
+    process.env.JWT_SECRET
+  )
 }
