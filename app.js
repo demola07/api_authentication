@@ -1,18 +1,37 @@
+const dotenv = require('dotenv')
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
-const userRoutes = require('./routes/users')
+const connectDB = require('./config/db')
+
+//load env files
+dotenv.config({ path: './config/config.env' })
 
 // Initialize express
 const app = express()
+
+// Connect to database
+connectDB()
 
 // middleware
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 
+// Route files
+const userRoutes = require('./routes/users')
+
 // routes
 app.use('/users', userRoutes)
+
+app.use((error, req, res, next) => {
+  const status = error.statusCode || 500
+  const message = error.message
+  res.status(status).json({
+    success: false,
+    error: message
+  })
+})
 
 const PORT = process.env.PORT || 3000
 
