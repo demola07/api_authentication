@@ -17,7 +17,6 @@ exports.signUp = async (req, res, next) => {
 
   // Create new user
   const newUser = new User({ email, password })
-
   await newUser.save()
 
   // Generate token
@@ -35,6 +34,7 @@ exports.signIn = async (req, res, next) => {
   res.send('Signin working')
 }
 exports.secret = async (req, res, next) => {
+  console.log(req.user.email)
   console.log('Secret route reached')
   res.send('secret working')
 }
