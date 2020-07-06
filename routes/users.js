@@ -9,7 +9,7 @@ const authenticateJwt = require('../middleware/passportJwt')
 
 router.route('/signup').post(validateBody(schemas.authSchema), signUp)
 
-router.route('/signin').post(signIn)
+router.route('/signin').post(validateBody(schemas.authSchema), authenticateJwt, signIn)
 
 router.route('/secret').get(authenticateJwt, secret)
 

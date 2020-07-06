@@ -37,16 +37,23 @@ passport.use(
       usernameField: 'email'
     },
     async (email, password, done) => {
-      // Find the user with email
-      const user = await User.findOne({ email })
+      try {
+        // Find the user with email
+        const user = await User.findOne({ email })
 
-      if (!user) {
-        done(null, false)
+        if (!user) {
+          return done('User does not exist', false)
+        }
+        //Validate password
+        const isMatchPassword = await user.isValidPassword(password)
+        if (!isMatchPassword) {
+          return done('Invalid Credentials', false)
+        }
+        // return user
+        done(null, user)
+      } catch (err) {
+        done(err, false)
       }
-
-      //Validate password
-
-      // return user
     }
   )
 )

@@ -30,8 +30,11 @@ exports.signUp = async (req, res, next) => {
   })
 }
 exports.signIn = async (req, res, next) => {
-  console.log('SignIn route reached')
-  res.send('Signin working')
+  const token = signToken(req.user)
+  res.status(200).json({
+    success: true,
+    token
+  })
 }
 exports.secret = async (req, res, next) => {
   console.log(req.user)
