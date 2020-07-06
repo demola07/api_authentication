@@ -1,13 +1,13 @@
 const passport = require('passport')
-const jwtStrategy = require('passport-jwt').Strategy
-const localStrategy = require('passport-local').Strategy
+const JwtStrategy = require('passport-jwt').Strategy
+const LocalStrategy = require('passport-local').Strategy
 const { ExtractJwt } = require('passport-jwt')
 
 const User = require('./models/User')
 
 // JSON WEB TOKEN STRATEGY
 passport.use(
-  new jwtStrategy(
+  new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromHeader('authorization'),
       secretOrKey: process.env.JWT_SECRET
@@ -15,22 +15,16 @@ passport.use(
     async (payload, done) => {
       try {
         // Find the users specified in token
-        const user = User.findById(payload.sub)
+        const user = await User.findById(payload.sub)
+        console.log(user)
 
         // Check if user exists
         if (!user) {
-          return done(null, false)
+          return done('User does not exist', false)
         }
-        // console.log('user', user)
-        // return user
         done(null, user)
-      } catch (error) {
-        if (error) {
-          const error = new Error('Not Authorized')
-          error.statusCode = 401
-          done(err, false)
-          throw error
-        }
+      } catch (err) {
+        done(err, false)
       }
     }
   )
@@ -38,7 +32,7 @@ passport.use(
 
 // LOCAL STRATEGY
 passport.use(
-  new localStrategy(
+  new LocalStrategy(
     {
       usernameField: 'email'
     },

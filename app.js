@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const passport = require('passport')
 
 const connectDB = require('./config/db')
 
@@ -10,6 +11,8 @@ dotenv.config({ path: './config/config.env' })
 
 // Initialize express
 const app = express()
+
+app.use(passport.initialize())
 
 // Connect to database
 connectDB()

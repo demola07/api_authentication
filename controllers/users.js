@@ -34,8 +34,7 @@ exports.signIn = async (req, res, next) => {
   res.send('Signin working')
 }
 exports.secret = async (req, res, next) => {
-  console.log(req.user.email)
-  console.log('Secret route reached')
+  console.log(req.user)
   res.send('secret working')
 }
 
