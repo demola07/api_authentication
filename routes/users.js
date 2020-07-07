@@ -5,7 +5,7 @@ const passport = require('passport')
 const passportStrategy = require('../passport')
 const { schemas, validateBody } = require('../util/routeHelper')
 const { signIn, secret, signUp } = require('../controllers/users')
-const authenticateJwt = require('../middleware/passportJwt')
+const authenticateJwt = require('../middleware/passportJwtAuth')
 
 router.route('/signup').post(validateBody(schemas.authSchema), signUp)
 

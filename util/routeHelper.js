@@ -4,7 +4,6 @@ module.exports = {
   validateBody: (schema) => {
     return (req, res, next) => {
       const result = schema.validate(req.body)
-      //   console.log(result)
       if (result.error) {
         const error = new Error(result.error.details[0].message)
         error.statusCode = 400
