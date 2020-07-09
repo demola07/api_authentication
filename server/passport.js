@@ -10,7 +10,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-      secretOrKey: process.env.JWT_SECRET
+      secretOrKey: process.env.JWT_SECRET || 'thgjhbk'
     },
     async (payload, done) => {
       try {

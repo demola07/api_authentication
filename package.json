@@ -2,10 +2,14 @@
   "name": "api_authentication",
   "version": "1.0.0",
   "description": "an app to authenticate users in various ways",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "cross-env NODE_ENV=production node -r dotenv/config index.js",
+    "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config index.js dotenv_config_path=./server/config/config.env",
+    "test": "cross-env NODE_ENV=test mocha --timeout 20000 __tests__/server/**/*.test.js",
+    "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 20000 __tests__/server/**/*.test.js",
+    "text-report": "cross-env NODE_ENV=test nyc --reporter=text-summary mocha --timeout 20000 __tests__/server/**/*.test.js",
+    "nyc": "cross-env NODE_ENV=test nyc mocha --timeout 20000 __tests__/server/**/*.test.js"
   },
   "author": "ademola sobaki",
   "license": "MIT",
@@ -13,6 +17,7 @@
     "@hapi/joi": "^17.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-promise-router": "^4.0.1",
@@ -24,6 +29,22 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "faker": "^4.1.0",
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
+    "rewire": "^5.0.0",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0"
+  },
+  "nyc": {
+    "exclude": [
+      "__tests__",
+      "node_modules"
+    ],
+    "cache": "false",
+    "report-dir": "./__test__/report"
   }
 }
