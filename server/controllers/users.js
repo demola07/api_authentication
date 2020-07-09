@@ -37,8 +37,9 @@ exports.signIn = async (req, res, next) => {
   })
 }
 exports.secret = async (req, res, next) => {
-  console.log(req.user)
-  res.send('secret working')
+  res.json({
+    message: 'You have reached the protected route'
+  })
 }
 
 const signToken = (user) => {
