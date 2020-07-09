@@ -1,3 +1,4 @@
+require('dotenv').config()
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const LocalStrategy = require('passport-local').Strategy
@@ -10,7 +11,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-      secretOrKey: process.env.JWT_SECRET || 'thgjhbk'
+      secretOrKey: process.env.JWT_SECRET
     },
     async (payload, done) => {
       try {

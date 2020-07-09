@@ -4,9 +4,9 @@
   "description": "an app to authenticate users in various ways",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node -r dotenv/config index.js",
-    "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config index.js dotenv_config_path=./server/config/config.env",
-    "test": "cross-env NODE_ENV=test mocha --timeout 20000 __tests__/server/**/*.test.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.j",
+    "test": "cross-env NODE_ENV=test mocha --timeout 50000 __tests__/server/**/*.test.js",
     "report": "cross-env NODE_ENV=test nyc --reporter=lcov mocha --timeout 20000 __tests__/server/**/*.test.js",
     "text-report": "cross-env NODE_ENV=test nyc --reporter=text-summary mocha --timeout 20000 __tests__/server/**/*.test.js",
     "nyc": "cross-env NODE_ENV=test nyc mocha --timeout 20000 __tests__/server/**/*.test.js"
