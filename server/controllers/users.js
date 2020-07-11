@@ -37,6 +37,7 @@ exports.signIn = async (req, res, next) => {
   })
 }
 exports.secret = async (req, res, next) => {
+  console.log('user', req.user)
   res.json({
     message: 'You have reached the protected route'
   })

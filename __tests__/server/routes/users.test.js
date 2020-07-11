@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const { expect } = chai
 
 const server = require('../../../server/app')
-const { signIn } = require('../../../server/controllers/users')
 
 chai.use(chaiHttp)
 
