@@ -57,4 +57,43 @@ describe.only('Users controller', () => {
       }
     })
   })
+
+  describe('Signin', () => {
+    it('should return token when signin is called', async () => {
+      sandbox.spy(res, 'json')
+      sandbox.spy(res, 'status')
+
+      /*  this test we are going to only test for 
+          statusCode and that res.json was only called once
+          next test we are going to fake jwt token        */
+
+      try {
+        await userController.signIn(req, res)
+
+        expect(res.status).to.have.been.calledWith(200)
+        expect(res.json.callCount).to.equal(1)
+        expect(res.json).to.have.been.calledOnce
+      } catch (err) {
+        throw new Error(err)
+      }
+    })
+
+    it('should return fake token with rewire', async () => {
+      sandbox.spy(res, 'json')
+      sandbox.spy(res, 'status')
+
+      // fake jwt token with rewire
+      let signToken = userController.__set__('signToken', (user) => 'fakeToken')
+
+      // we expect res.json to have been called with our fake token
+      try {
+        await userController.signIn(req, res)
+
+        expect(res.json).to.have.been.calledWith({ success: true, token: 'fakeToken' })
+        signToken()
+      } catch (err) {
+        throw new Error(err)
+      }
+    })
+  })
 })
