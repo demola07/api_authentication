@@ -12,7 +12,7 @@ chai.use(sinonChai)
 
 let sandbox = null
 
-describe.only('Users controller', () => {
+describe('Users controller', () => {
   let req = {
     user: { id: faker.random.number() },
     value: {
@@ -94,6 +94,57 @@ describe.only('Users controller', () => {
       } catch (err) {
         throw new Error(err)
       }
+    })
+  })
+
+  describe('Signup', () => {
+    it('should return 403 if the user is already saved in the db', async () => {
+      sandbox.spy(res, 'json')
+      sandbox.spy(res, 'status')
+      sandbox.stub(User, 'findOne').returns(Promise.resolve({ id: faker.random.number() }))
+
+      try {
+        await userController.signUp(req, res)
+
+        expect(res.status).to.have.been.calledWith(403)
+        expect(res.json).to.have.been.calledWith({ success: false, error: 'User already exists' })
+      } catch (err) {
+        throw new Error(err)
+      }
+    })
+
+    it('should return 200 if user is not in db and it was saved successfully', async () => {
+      sandbox.spy(res, 'status')
+      sandbox.spy(res, 'json')
+      sandbox.stub(User, 'findOne').returns(Promise.resolve(false))
+      sandbox.stub(User.prototype, 'save').returns(Promise.resolve({ id: faker.random.number() }))
+
+      try {
+        await userController.signUp(req, res)
+
+        expect(res.status).to.have.been.calledWith(201)
+        expect(res.json.callCount).to.equal(1)
+      } catch (err) {
+        throw new Error(err)
+      }
+    })
+
+    it('should return fake token in res.json', async () => {
+      sandbox.spy(res, 'status')
+      sandbox.spy(res, 'json')
+      sandbox.stub(User, 'findOne').returns(Promise.resolve(false))
+      sandbox.stub(User.prototype, 'save').returns(Promise.resolve({ id: faker.random.number() }))
+
+      let signToken = userController.__set__('signToken', (user) => 'fakeTokenNumberTwo')
+
+      await userController.signUp(req, res)
+
+      expect(res.json).to.have.been.calledWith({
+        success: true,
+        message: 'User created',
+        token: 'fakeTokenNumberTwo'
+      })
+      signToken()
     })
   })
 })
