@@ -1,3 +1,4 @@
+require('dotenv').config()
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const LocalStrategy = require('passport-local').Strategy
@@ -16,7 +17,6 @@ passport.use(
       try {
         // Find the users specified in token
         const user = await User.findById(payload.sub)
-        console.log(user)
 
         // Check if user exists
         if (!user) {
