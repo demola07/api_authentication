@@ -11,6 +11,8 @@ router.route('/signup').post(validateBody(schemas.authSchema), signUp)
 
 router.route('/signin').post(validateBody(schemas.authSchema), authenticateJwt, signIn)
 
+router.route('/oauth/google').post(passport.authenticate('googleToken', { session: false }))
+
 router.route('/secret').get(authenticateJwt, secret)
 
 module.exports = router

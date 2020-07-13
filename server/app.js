@@ -26,6 +26,7 @@ const userRoutes = require('./routes/users')
 // routes
 app.use('/users', userRoutes)
 
+// Error handling
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500
   const message = error.message

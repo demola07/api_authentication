@@ -2,6 +2,7 @@ require('dotenv').config()
 const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const LocalStrategy = require('passport-local').Strategy
+const GoogleTokenStrategy = require('passport-google-plus-token')
 const { ExtractJwt } = require('passport-jwt')
 
 const User = require('./models/User')
@@ -54,6 +55,22 @@ passport.use(
       } catch (err) {
         done(err, false)
       }
+    }
+  )
+)
+
+// GOOGLE OAUTH STRATEGY
+passport.use(
+  'googleToken',
+  new GoogleTokenStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      console.log('accessToken', accessToken)
+      console.log('refreshToken', refreshToken)
+      console.log('profile', profile)
     }
   )
 )
