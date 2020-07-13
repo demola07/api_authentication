@@ -9,6 +9,7 @@ const User = require('./models/User')
 
 // JSON WEB TOKEN STRATEGY
 passport.use(
+  'jwt',
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromHeader('authorization'),
@@ -33,6 +34,7 @@ passport.use(
 
 // LOCAL STRATEGY
 passport.use(
+  'local',
   new LocalStrategy(
     {
       usernameField: 'email'
@@ -68,9 +70,28 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log('accessToken', accessToken)
-      console.log('refreshToken', refreshToken)
-      console.log('profile', profile)
+      try {
+        console.log('accessToken', accessToken)
+        console.log('refreshToken', refreshToken)
+        console.log('profile', profile)
+
+        // check if current user exists in database
+        const existingUser = await User.findOne({ 'google.id': profile.id })
+        if (existingUser) return done(null, existingUser)
+
+        // if new user
+        const newUser = await User.create({
+          method: 'google',
+          google: {
+            id: profile.id,
+            email: profile.emails[0].value
+          }
+        })
+
+        done(null, newUser)
+      } catch (err) {
+        done(err, false)
+      }
     }
   )
 )
