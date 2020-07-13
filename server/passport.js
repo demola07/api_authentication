@@ -42,15 +42,17 @@ passport.use(
     async (email, password, done) => {
       try {
         // Find the user with email
-        const user = await User.findOne({ email })
+        const user = await User.findOne({ 'local.email': email })
 
         if (!user) {
-          return done('User does not exist', false)
+          const error = new Error('User does not exist')
+          return done(error, false)
         }
         //Validate password
         const isMatchPassword = await user.isValidPassword(password)
         if (!isMatchPassword) {
-          return done('Invalid Credentials', false)
+          const error = new Error('Invalid Credentials')
+          return done(error, false)
         }
         // return user
         done(null, user)
