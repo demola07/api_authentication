@@ -43,28 +43,27 @@ exports.signIn = async (req, res, next) => {
 }
 
 exports.googleOauth = async (req, res, next) => {
-  // Generate token
-  const token = signToken(req.user)
-
-  res.status(200).json({
-    success: true,
-    token
-  })
+  // Generate token and send response
+  generateOauthToken(req, res, 200)
 }
 
 exports.facebookOauth = async (req, res, next) => {
-  // Generate token
-  const token = signToken(req.user)
-
-  res.status(200).json({
-    success: true,
-    token
-  })
+  // Generate token and send response
+  generateOauthToken(req, res, 200)
 }
 
 exports.secret = async (req, res, next) => {
   res.json({
     message: 'You have reached the protected route'
+  })
+}
+
+const generateOauthToken = (req, res, statusCode) => {
+  const token = signToken(req.user)
+
+  res.status(200).json({
+    success: true,
+    token
   })
 }
 
