@@ -44,7 +44,16 @@ exports.signIn = async (req, res, next) => {
 
 exports.googleOauth = async (req, res, next) => {
   // Generate token
-  console.log('google req.user', req.user)
+  const token = signToken(req.user)
+
+  res.status(200).json({
+    success: true,
+    token
+  })
+}
+
+exports.facebookOauth = async (req, res, next) => {
+  // Generate token
   const token = signToken(req.user)
 
   res.status(200).json({
@@ -54,7 +63,6 @@ exports.googleOauth = async (req, res, next) => {
 }
 
 exports.secret = async (req, res, next) => {
-  console.log('user', req.user)
   res.json({
     message: 'You have reached the protected route'
   })

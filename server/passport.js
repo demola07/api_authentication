@@ -3,6 +3,7 @@ const passport = require('passport')
 const JwtStrategy = require('passport-jwt').Strategy
 const LocalStrategy = require('passport-local').Strategy
 const GoogleTokenStrategy = require('passport-google-plus-token')
+const FacebookTokenStrategy = require('passport-facebook-token')
 const { ExtractJwt } = require('passport-jwt')
 
 const User = require('./models/User')
@@ -22,7 +23,8 @@ passport.use(
 
         // Check if user exists
         if (!user) {
-          return done('User does not exist', false)
+          const error = new Error('User does not exist')
+          return done(error, false)
         }
         done(null, user)
       } catch (err) {
@@ -73,10 +75,6 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log('accessToken', accessToken)
-        console.log('refreshToken', refreshToken)
-        console.log('profile', profile)
-
         // check if current user exists in database
         const existingUser = await User.findOne({ 'google.id': profile.id })
         if (existingUser) return done(null, existingUser)
@@ -93,6 +91,37 @@ passport.use(
         done(null, newUser)
       } catch (err) {
         done(err, false)
+      }
+    }
+  )
+)
+
+// FACEBOOK OAUTH STRATEGY
+passport.use(
+  'facebookToken',
+  new FacebookTokenStrategy(
+    {
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // check if current user exists in database
+        const existingUser = await User.findOne({ 'facebook.id': profile.id })
+        if (existingUser) return done(null, existingUser)
+
+        // if new user
+        const newUser = await User.create({
+          method: 'facebook',
+          facebook: {
+            id: profile.id,
+            email: profile.emails[0].value
+          }
+        })
+
+        done(null, newUser)
+      } catch (err) {
+        done(err, false, err.message)
       }
     }
   )

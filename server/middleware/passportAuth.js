@@ -22,4 +22,25 @@ function authenticateWithPassport(req, res, next) {
   })(req, res, next)
 }
 
-module.exports = authenticateWithPassport
+function authenticateWithPassport_facebook(req, res, next) {
+  passport.authenticate('facebookToken', { session: false }, function (err, user, info) {
+    if (err) {
+      const error = new Error(err.message)
+      error.statusCode = 400
+      return next(error)
+    }
+    if (!user) {
+      error = new Error('User is not authenticated.')
+      error.statusCode = 401
+      return next(error)
+    }
+
+    req.user = user
+    next()
+  })(req, res, next)
+}
+
+module.exports = {
+  authenticateWithPassport,
+  authenticateWithPassport_facebook
+}
